@@ -14,26 +14,14 @@ public class Main {
         arrayPoints1.add(point3);
         arrayPoints1.add(point4);
 
-        //Создается массив нужных точек для создания замкнутой ломаной линии
-        ArrayList<Point> arrayPoints2 = new ArrayList<>();
-        arrayPoints2.add(point1);
-        arrayPoints2.add(point2);
-        arrayPoints2.add(point3);
-        arrayPoints2.add(point4);
-        arrayPoints2.add(point1);
-
-        //Создать Ломаную, проходящую через точки
+        //добавить 2 разных инстанса разных классов Line и PolyLine
+        Line line1 = new Line(point1, point2);
         PolyLine polyLine1 = new PolyLine(arrayPoints1);
-        PolyLine polyLine2 = new PolyLine(arrayPoints2);
 
-        //Создать список ломанных
-        ArrayList<PolyLine> arrayPolyline = new ArrayList<>();
-        arrayPolyline.add(polyLine1);
-        arrayPolyline.add(polyLine2);
+        //вызывать метод подсчета длины у разных инстансов
+        System.out.println(line1.getLength());
+        System.out.println(polyLine1.getLength());
 
-        //Создать экземпляр класса тест, где лежит интерфейсный метод
-        Test test = new Test();
-        test.executeMeasure(arrayPolyline);
     }
 }
 
@@ -73,61 +61,27 @@ class Line implements Measurable {
         int segment2 = start.y - end.y;
         return Math.sqrt(segment1 * segment1 + segment2 * segment2);
     }
-
-    public void measure() {
-        System.out.println(this);
-    }
-
-    ;
 }
+
 
 class PolyLine implements Measurable {
     ArrayList<Point> listPoint = new ArrayList<>();
 
-    //конструктор с массивом точек
     public PolyLine(ArrayList<Point> listPoint) {
         this.listPoint = listPoint;
     }
 
-    //конструктор без параметров
-    public PolyLine() {
-    }
-
-    //расчитать длину ломаной
-    public double getLength(ArrayList<Point> listPoint) {
-        this.listPoint = listPoint;
-        double polyLineLength = 0;
+    public double getLength() {
+        double sum = 0, len1, len2;
         for (int i = 0; i < listPoint.size() - 1; i++) {
-            int katet1 = listPoint.get(i + 1).x - listPoint.get(i).x;
-            int katet2 = listPoint.get(i + 1).y - listPoint.get(i).y;
-            double segment = Math.sqrt(katet1 * katet1 + katet2 * katet2);
-            polyLineLength += segment;
+            len1 = listPoint.get(i).x - listPoint.get(i + 1).x;
+            len2 = listPoint.get(i).y - listPoint.get(i + 1).y;
+            sum += Math.sqrt(len1 * len1 + len2 * len2);
         }
-        System.out.println("Длина итоговая ломаной " + polyLineLength);
-        return polyLineLength;
-    }
-
-    public void measure() {
-        System.out.println(this);
-    }
-
-    ;
-
-    public String toString() {
-        return "Линия " + listPoint.toString();
+        return sum;
     }
 }
 
 interface Measurable {
-    void measure();
-}
-
-class Test {
-    public void executeMeasure(ArrayList<PolyLine> listPolyline) {
-        ArrayList<Measurable> measurable = new ArrayList<>();
-        measurable.addAll(listPolyline);
-        for (Measurable element : measurable) {
-            System.out.println(element);
-        }
-    }
+    double getLength();
 }
